@@ -6,6 +6,7 @@ export const data = {
   options: []
 }
 export const aliases = ['pong', 'latency']
+export const cooldown = 5 // 5 second cooldown
 
 export async function execute(interaction) {
   const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true, flags: 64 })
