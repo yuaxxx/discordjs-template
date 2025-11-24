@@ -8,6 +8,15 @@ export const data = {
 export const aliases = ['server', 'guildinfo']
 export const cooldown = 10
 
+// Map Discord verification levels to human-readable strings
+const verificationLevels = {
+  0: 'None',
+  1: 'Low',
+  2: 'Medium',
+  3: 'High',
+  4: 'Very High'
+}
+
 export async function execute(interaction) {
   const guild = interaction.guild
 
@@ -20,6 +29,7 @@ export async function execute(interaction) {
 
   const owner = await guild.fetchOwner()
   const createdAt = Math.floor(guild.createdTimestamp / 1000)
+  const verificationLevel = verificationLevels[guild.verificationLevel] || 'Unknown'
 
   const embed = new EmbedBuilder()
     .setTitle(`📊 ${guild.name}`)
@@ -33,7 +43,7 @@ export async function execute(interaction) {
       { name: '😀 Emojis', value: `${guild.emojis.cache.size}`, inline: true },
       {
         name: '🛡️ Verification Level',
-        value: guild.verificationLevel.toString(),
+        value: verificationLevel,
         inline: true
       },
       { name: '💬 Total Roles', value: `${guild.roles.cache.size}`, inline: true },

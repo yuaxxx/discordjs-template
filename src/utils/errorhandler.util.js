@@ -14,8 +14,11 @@ export function errorHandler(fn) {
     try {
       await fn(interaction)
     } catch (err) {
-      // Log full error for debugging (server-side only)
-      console.error(`[Command Error] ${interaction.commandName}:`, err)
+      // Sanitize error message for logging to prevent log injection
+      const sanitizedError = String(err?.message || err).replace(/[\n\r]/g, ' ')
+
+      // Log full error for debugging (server-side only) with sanitized output
+      console.error(`[Command Error] ${interaction.commandName}: ${sanitizedError}`)
 
       // Create user-friendly error message (no stack trace exposure)
       const errorMessage =

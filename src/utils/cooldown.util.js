@@ -16,6 +16,34 @@ export class CooldownManager {
   constructor() {
     // Map<commandName, Map<userId, expirationTimestamp>>
     this.cooldowns = new Collection()
+    this.cleanupTimers = new Map()
+
+    // Periodic cleanup every 5 minutes to prevent memory leaks
+    this.cleanupInterval = setInterval(
+      () => {
+        this.performCleanup()
+      },
+      5 * 60 * 1000
+    )
+  }
+
+  /**
+   * Perform cleanup of expired cooldowns
+   * Called periodically to prevent memory leaks
+   */
+  performCleanup() {
+    const now = Date.now()
+    for (const [commandName, userCooldowns] of this.cooldowns) {
+      for (const [userId, expirationTime] of userCooldowns) {
+        if (now >= expirationTime) {
+          userCooldowns.delete(userId)
+        }
+      }
+      // Remove empty command cooldown maps
+      if (userCooldowns.size === 0) {
+        this.cooldowns.delete(commandName)
+      }
+    }
   }
 
   /**
@@ -74,14 +102,6 @@ export class CooldownManager {
     const expirationTime = Date.now() + duration * 1000
 
     userCooldowns.set(userId, expirationTime)
-
-    // Auto-cleanup after expiration
-    setTimeout(() => {
-      userCooldowns.delete(userId)
-      if (userCooldowns.size === 0) {
-        this.cooldowns.delete(commandName)
-      }
-    }, duration * 1000)
   }
 
   /**
@@ -103,9 +123,12 @@ export class CooldownManager {
   }
 
   /**
-   * Clear all cooldowns
+   * Clear all cooldowns and stop cleanup interval
    */
   clearAll() {
     this.cooldowns.clear()
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval)
+    }
   }
 }
