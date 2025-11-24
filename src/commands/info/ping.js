@@ -6,5 +6,5 @@ export const data = {
 export const aliases = ['pong', 'test']
 
 export async function execute(interaction) {
-  await interaction.reply({ content: 'jebac disa', flags: 64 })
+  await interaction.reply({ content: 'Pong!', flags: 64 })
 }
