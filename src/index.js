@@ -17,7 +17,7 @@ try {
 }
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds],
+  intents: [GatewayIntentBits.Guilds]
 })
 
 const loader = new CommandLoader(client)
@@ -33,9 +33,10 @@ const restClient = new REST().setToken(process.env.BOT_TOKEN)
 
 // Determine deployment mode: guild (dev, fast update) or global (prod, ~1h delay)
 const deploymentMode = process.env.DEPLOYMENT_MODE || 'dev'
-const route = deploymentMode === 'prod'
-  ? Routes.applicationCommands(process.env.CLIENT_ID)
-  : Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID)
+const route =
+  deploymentMode === 'prod'
+    ? Routes.applicationCommands(process.env.CLIENT_ID)
+    : Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID)
 
 try {
   await restClient.put(route, { body: commandsToRegister })

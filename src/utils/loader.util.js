@@ -14,7 +14,7 @@ export class CommandLoader {
 
   async loadAll() {
     // Recursively scan all subdirectories for .js command files
-    const scanDir = async (dir) => {
+    const scanDir = async dir => {
       const entries = readdirSync(dir)
       for (const entry of entries) {
         const fullPath = path.join(dir, entry)
@@ -31,11 +31,9 @@ export class CommandLoader {
 
   async load({ file, dir }) {
     try {
-      const resolvedDir = dir && typeof dir === 'string'
-        ? dir
-        : path.join(this.commandsDir, file)
+      const resolvedDir = dir && typeof dir === 'string' ? dir : path.join(this.commandsDir, file)
       if (!resolvedDir || typeof resolvedDir !== 'string' || !existsSync(resolvedDir)) {
-        throw `Nieprawidłowa ścieżka do komendy: ${resolvedDir} (file: ${file})`
+        throw `Invalid command path: ${resolvedDir} (file: ${file})`
       }
       const fileUrl = `file://${path.resolve(resolvedDir)}`
       // Cache-bust dynamic import to enable hot-reload
@@ -51,10 +49,10 @@ export class CommandLoader {
       // Wrap execute function with global error handler to prevent crashes
       const safeExecute = errorHandler(execute)
 
-      this.client.commands.set(data.name, { 
-        ...commandModule, 
-        execute: safeExecute, 
-        file, 
+      this.client.commands.set(data.name, {
+        ...commandModule,
+        execute: safeExecute,
+        file,
         dir: resolvedDir,
         folder: folderName
       })
@@ -76,13 +74,12 @@ export class CommandLoader {
 
   async unload(name) {
     try {
-      const command = this.client.commands.get(name) ||
-        this.client.commands.get(this.client.aliases.get(name))
+      const command =
+        this.client.commands.get(name) || this.client.commands.get(this.client.aliases.get(name))
       if (!command) throw 'Command not found in registry'
 
       this.client.commands.delete(command.data.name)
-      if (command.aliases)
-        command.aliases.forEach(alias => this.client.aliases.delete(alias))
+      if (command.aliases) command.aliases.forEach(alias => this.client.aliases.delete(alias))
 
       log.warn(`Unloaded command: ${command.file}`)
     } catch (e) {
@@ -92,8 +89,7 @@ export class CommandLoader {
 
   async reload(name) {
     const cmd =
-      this.client.commands.get(name) ||
-      this.client.commands.get(this.client.aliases.get(name))
+      this.client.commands.get(name) || this.client.commands.get(this.client.aliases.get(name))
 
     if (!cmd) {
       throw `Command ${name} is not loaded, cannot reload`
