@@ -102,7 +102,7 @@ const user = interaction.user
 ### Setup Development Environment
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/discord.js-template.git
+git clone https://github.com/yuaxxx/discord.js-template.git
 cd discord.js-template
 
 # Install dependencies
