@@ -60,7 +60,7 @@ discord.js-template/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/discord.js-template.git
+   git clone https://github.com/yuaxxx/discord.js-template.git
    cd discord.js-template
    ```
 
