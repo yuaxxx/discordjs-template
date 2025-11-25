@@ -10,7 +10,10 @@ export default async function messageCreate(client, message) {
   // Mention reply: „Mój prefix to ...”
   const mentionRegex = new RegExp(`^<@!?${client.user.id}>( |)$`)
   if (message.content.match(mentionRegex)) {
-    return message.reply({ content: `Mój prefix to \`${prefix}\``, allowedMentions: { repliedUser: false } })
+    return message.reply({
+      content: `Mój prefix to \`${prefix}\``,
+      allowedMentions: { repliedUser: false }
+    })
   }
 
   // Sprawdź czy zaczyna się od prefixu
@@ -22,8 +25,7 @@ export default async function messageCreate(client, message) {
   if (!cmd) return
 
   // Szukaj komendy po name/alias (prefix handler operuje na innej mapie niż slash)
-  const command = client.commands.get(cmd) ||
-    client.commands.get(client.aliases.get(cmd))
+  const command = client.commands.get(cmd) || client.commands.get(client.aliases.get(cmd))
   if (!command) return
 
   // Bot musi mieć EMBED_LINKS
@@ -44,7 +46,10 @@ export default async function messageCreate(client, message) {
         await message.reply({ embeds: [errEmbed] })
         block = true
         break
-      } else if (perm !== 'dev' && !message.member.permissions.has(PermissionsBitField.Flags[perm])) {
+      } else if (
+        perm !== 'dev' &&
+        !message.member.permissions.has(PermissionsBitField.Flags[perm])
+      ) {
         const errEmbed = new EmbedBuilder()
           .setAuthor({ name: 'Błąd!' })
           .setColor('Red')
@@ -62,7 +67,10 @@ export default async function messageCreate(client, message) {
   if (command.botperm) {
     let block = false
     for (const perm of command.botperm) {
-      if (perm !== 'dev' && !message.guild.members.me.permissions.has(PermissionsBitField.Flags[perm])) {
+      if (
+        perm !== 'dev' &&
+        !message.guild.members.me.permissions.has(PermissionsBitField.Flags[perm])
+      ) {
         const errEmbed = new EmbedBuilder()
           .setAuthor({ name: 'Błąd!' })
           .setColor('Red')
@@ -77,20 +85,22 @@ export default async function messageCreate(client, message) {
   }
 
   // Run komendy (legacy, przekazujesz context i helpers)
-  command.run({
-    client,
-    message,
-    args,
-    prefix,
-    command,
-    EmbedBuilder
-  }).catch(err => {
-    console.error(err)
-    const errEmbed = new EmbedBuilder()
-      .setTitle('ERROR!')
-      .setDescription(`${err}`)
-      .setColor('Red')
-      .setFooter({ text: message.author.tag, iconURL: message.author.displayAvatarURL() })
-    message.reply({ embeds: [errEmbed] })
-  })
+  command
+    .run({
+      client,
+      message,
+      args,
+      prefix,
+      command,
+      EmbedBuilder
+    })
+    .catch(err => {
+      console.error(err)
+      const errEmbed = new EmbedBuilder()
+        .setTitle('ERROR!')
+        .setDescription(`${err}`)
+        .setColor('Red')
+        .setFooter({ text: message.author.tag, iconURL: message.author.displayAvatarURL() })
+      message.reply({ embeds: [errEmbed] })
+    })
 }

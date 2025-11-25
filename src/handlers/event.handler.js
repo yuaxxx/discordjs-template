@@ -1,6 +1,6 @@
-import { log } from "../utils/logger.util.js"
-import { readdirSync } from "fs"
-import path from "path"
+import { log } from '../utils/logger.util.js'
+import { readdirSync } from 'fs'
+import path from 'path'
 
 /**
  * Modular event handler - automatically loads all events from src/events/
@@ -8,8 +8,8 @@ import path from "path"
  * Each event file must export a default function that receives (client, ...eventArgs)
  */
 export default async function loadEvents(client) {
-  const eventsDir = path.resolve("src/events")
-  const files = readdirSync(eventsDir).filter(fn => fn.endsWith(".js"))
+  const eventsDir = path.resolve('src/events')
+  const files = readdirSync(eventsDir).filter(fn => fn.endsWith('.js'))
 
   for (const file of files) {
     const eventName = file.replace(/\.js$/, '')
@@ -18,7 +18,7 @@ export default async function loadEvents(client) {
     const eventModule = await import(`file://${modulePath}`)
     const handler = eventModule.default
 
-    if (typeof handler !== "function") {
+    if (typeof handler !== 'function') {
       console.warn(`Event file ${file} does not export a function as default - skipping`)
       continue
     }

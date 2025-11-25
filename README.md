@@ -128,6 +128,9 @@ export const aliases = ['ex', 'demo']
 // Optional: Permission requirements
 export const perm = ['dev'] // or ['ManageMessages', 'Administrator']
 
+// Optional: Cooldown in seconds (prevents spam)
+export const cooldown = 5
+
 // Command execution logic
 export async function execute(interaction) {
   const input = interaction.options.getString('input') || 'default'
@@ -150,6 +153,7 @@ export async function execute(interaction) {
 - **`execute`** (required) – Async function receiving `interaction` parameter
 - **`aliases`** (optional) – Array of alternative command names
 - **`perm`** (optional) – Array of required permissions (`['dev']` or Discord permission flags)
+- **`cooldown`** (optional) – Cooldown duration in seconds (prevents spam)
 
 ## Deployment Modes
 
@@ -230,14 +234,15 @@ Each event file exports default function: `(client, ...eventArgs) => {}`
 
 ## Built-in Commands
 
-| Command | Category | Description |
-|---------|----------|-------------|
-| `/ping` | info | Basic latency test |
-| `/help` | info | Command list and details |
-| `/uptime` | utils | Bot uptime duration |
-| `/whoami` | utils | User information |
-| `/eval` | dev | Execute JavaScript (owner-only) |
-| `/reload` | dev | Hot-reload command (owner-only) |
+| Command | Category | Description | Cooldown |
+|---------|----------|-------------|----------|
+| `/ping` | info | Check bot latency and API response time | 5s |
+| `/help` | info | Command list and details | - |
+| `/serverinfo` | info | Display server information | 10s |
+| `/uptime` | utils | Bot uptime duration | - |
+| `/whoami` | utils | User information | - |
+| `/eval` | dev | Execute JavaScript (owner-only) | - |
+| `/reload` | dev | Hot-reload command (owner-only) | - |
 
 ## Development
 
